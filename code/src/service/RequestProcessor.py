@@ -29,8 +29,7 @@ class RequestProcessor:
             print("Received EVENT input")
             yield from self._process_event_input(request.event_input)
 
-        elif event_type == "audio_input":
-            print("Received AUDIO input") # Please remove this print during the stream
+        elif event_type == "audio_input":            
             yield from self._process_audio_event(request.audio_input.caller_audio)
 
     def _process_dtmf_event(self, dtmf_event):
