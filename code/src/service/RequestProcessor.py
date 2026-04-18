@@ -25,11 +25,10 @@ class RequestProcessor:
             print("Received DTMF input")
             yield from self._process_dtmf_event(request.dtmf_input)
 
-        elif event_type == "event_input":
-            print("Received EVENT input")
+        elif event_type == "event_input":            
             yield from self._process_event_input(request.event_input)
 
-        elif event_type == "audio_input":            
+        elif event_type == "audio_input":
             yield from self._process_audio_event(request.audio_input.caller_audio)
 
     def _process_dtmf_event(self, dtmf_event):
@@ -50,9 +49,11 @@ class RequestProcessor:
 
     def _process_event_input(self, event_input):
         if event_input.event_type == EventInput.EventType.SESSION_START:
+            print("Received Session start input")
             initial_audio = AudioUtils.get_default_audio()
             yield EventUtils.get_audio_output_events_bytes(initial_audio, "Add transcript of the audio", self.is_barge_in_enabled, VoiceVAResponse.ResponseType.FINAL)
         elif event_input.event_type == EventInput.EventType.SESSION_END:
+            print("Received Session end input")
             # Call ends here. Connection cleanup and memory release can be done here.
             yield VoiceVAResponse()
 

@@ -31,8 +31,7 @@ class AudioProcessor:
 
     def _response_to_user_as_chunk(self):
         self.audio_buffer.clear()
-        ai_audio = AudioUtils.get_default_audio()
-        yield EventUtils.get_audio_output_events_bytes(ai_audio, "Transcript of the audio", self.is_barge_in_enabled, VoiceVAResponse.ResponseType.CHUNK)
+        ai_audio = AudioUtils.get_default_audio()        
         chunk_size = 640  # 80ms at 8kHz mu-law (1 byte/sample). Chunk size can be any value. Here it is set to make ~80ms of audio.
         for i in range(0, len(ai_audio), chunk_size):
             audio_chunk = ai_audio[i:i + chunk_size]
