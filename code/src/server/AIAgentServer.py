@@ -33,17 +33,21 @@ class AIAgent(voicevirtualagent_pb2_grpc.VoiceVirtualAgentServicer):
         return ""
     
     def ListVirtualAgents(self, request, context):
-        for meta_data in context.invocation_metadata():
-            if meta_data.key == 'trackingid':
-                break
-        response = byova_common_pb2.ListVAResponse()        
-        for agent in self.ai_agent.get_all_ai_agent():
-            virtual_agent_info = response.virtual_agents.add()
-            virtual_agent_info.virtual_agent_id = str(agent.virtual_agent_id)
-            virtual_agent_info.virtual_agent_name = agent.virtual_agent_name
-            virtual_agent_info.is_default = agent.is_default
+        try:
+            for meta_data in context.invocation_metadata():
+                if meta_data.key == 'trackingid':
+                    break
+            response = byova_common_pb2.ListVAResponse()        
+            for agent in self.ai_agent.get_all_ai_agent():
+                virtual_agent_info = response.virtual_agents.add()
+                virtual_agent_info.virtual_agent_id = str(agent.virtual_agent_id)
+                virtual_agent_info.virtual_agent_name = agent.virtual_agent_name
+                virtual_agent_info.is_default = agent.is_default
 
-        return response
+            return response
+        except Exception as ex:
+            print(f"Error in ListVirtualAgents: {ex}")
+            raise    
 
     def ProcessCallerInput(self, request_iterator, context):
         conversation_id = None
