@@ -43,7 +43,7 @@ class AIAgent(voicevirtualagent_pb2_grpc.VoiceVirtualAgentServicer):
                 virtual_agent_info.virtual_agent_id = str(agent.virtual_agent_id)
                 virtual_agent_info.virtual_agent_name = agent.virtual_agent_name
                 virtual_agent_info.is_default = agent.is_default
-            print(f"Returning List VA response {response}")    
+            print(f"Returning List VA response")    
             return response
         except Exception as ex:
             print(f"Error in ListVirtualAgents: {ex}")
