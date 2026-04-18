@@ -14,16 +14,26 @@ class AuthInterceptor(grpc.ServerInterceptor):
         pass
 
     def intercept_service(self, continuation, handler_call_details):
-        # Extract the metadata from the handler_call_details
-        metadata = dict(handler_call_details.invocation_metadata)
+        try:
+            # Extract the metadata from the handler_call_details
+            metadata = dict(handler_call_details.invocation_metadata)
 
-        # Check for the presence of a token in the metadata
-        token = metadata.get('authorization')
-        tracking_id = metadata.get('trackingId')
+            # Check for the presence of a token in the metadata
+            token = metadata.get('authorization')
 
-        if not token or not self.validate_token(token):
-            raise grpc.RpcError(grpc.StatusCode.UNAUTHENTICATED, 'Invalid or missing token')
-        return continuation(handler_call_details)
+            if not token or not self.validate_token(token):
+                print("Authentication failed: Invalid or missing token")
+                return self._unauthenticated_handler()
+            return continuation(handler_call_details)
+        except Exception as ex:
+            print(f"Error in AuthInterceptor: {ex}")
+            return continuation(handler_call_details)
+
+    @staticmethod
+    def _unauthenticated_handler():
+        def terminate(ignored_request, context):
+            context.abort(grpc.StatusCode.UNAUTHENTICATED, 'Invalid or missing token')
+        return grpc.unary_unary_rpc_method_handler(terminate)
 
     def validate_token(self, token: str) -> bool:
         # Perform the token validation here
