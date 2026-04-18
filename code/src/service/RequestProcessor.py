@@ -22,12 +22,15 @@ class RequestProcessor:
         event_type = request.WhichOneof("voice_va_input_type")
 
         if event_type == "dtmf_input":
+            print("Received DTMF input")
             yield from self._process_dtmf_event(request.dtmf_input)
 
         elif event_type == "event_input":
+            print("Received EVENT input")
             yield from self._process_event_input(request.event_input)
 
         elif event_type == "audio_input":
+            print("Received AUDIO input") # Please remove this print during the stream
             yield from self._process_audio_event(request.audio_input.caller_audio)
 
     def _process_dtmf_event(self, dtmf_event):
