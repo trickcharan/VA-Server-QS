@@ -25,7 +25,7 @@ class RequestProcessor:
             print("Received DTMF input")
             yield from self._process_dtmf_event(request.dtmf_input)
 
-        elif event_type == "event_input":            
+        elif event_type == "event_input":
             yield from self._process_event_input(request.event_input)
 
         elif event_type == "audio_input":
