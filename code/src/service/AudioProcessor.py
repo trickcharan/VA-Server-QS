@@ -43,4 +43,4 @@ class AudioProcessor:
     def _is_end_of_speech(self):
         # Here we need to process the audio and detect the end of speech. For simplicity, we are checking the buffer size.
         print(f"Length of buffer {len(self.audio_buffer)}")
-        return len(self.audio_buffer) > 100000
+        return len(self.audio_buffer) > 800159
