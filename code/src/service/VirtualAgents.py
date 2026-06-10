@@ -1,8 +1,8 @@
 import os
 from VirtualAgentInfo import VirtualAgentInfo
 import json
-parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-config_dir = os.path.join(parent_dir, 'config/')
+parent_dir = os.path.dirname(os.path.abspath(__file__))  # src/service/
+config_dir = os.path.join(os.path.dirname(parent_dir), 'config/')  # src/config/
 
 class VirtualAgents:
 
