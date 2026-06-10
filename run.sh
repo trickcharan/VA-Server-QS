@@ -14,6 +14,10 @@ if ! command -v flac &>/dev/null; then
     echo "⚠️  flac not found. Install it: brew install flac"
     exit 1
 fi
+if ! brew list libsndfile &>/dev/null 2>&1; then
+    echo "⚠️  libsndfile not found. Install it: brew install libsndfile"
+    exit 1
+fi
 
 # Check if virtual environment exists
 if [ ! -d "$SCRIPT_DIR/.venv" ]; then

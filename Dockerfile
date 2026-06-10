@@ -1,10 +1,12 @@
-FROM python:3.10-alpine
+FROM python:3.10-slim
 
 RUN mkdir -p /app
 COPY . /app
 WORKDIR /app/code
 
-RUN apk add --no-cache ffmpeg flac build-base libsndfile
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg flac libsndfile1 build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir -r requirements.txt
 
