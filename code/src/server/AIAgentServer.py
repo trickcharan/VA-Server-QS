@@ -19,7 +19,7 @@ from VirtualAgents import VirtualAgents
 from AuthInterceptor import AuthInterceptor
 from RequestProcessor import RequestProcessor
 
-PORT = 443
+PORT = 8086
 
 class AIAgent(voicevirtualagent_pb2_grpc.VoiceVirtualAgentServicer):
     def __init__(self):
