@@ -33,11 +33,25 @@ code/
 
 ## Quick Start
 
-The easiest way to run the server is using the provided script:
+### Docker (recommended)
 
 ```bash
-chmod +x run.sh
-./run.sh
+docker build -t va-server-qs . && docker run -p 8086:8086 va-server-qs
+```
+
+### Local (macOS)
+
+Ensure system dependencies are installed first:
+
+```bash
+brew install ffmpeg flac libsndfile
+```
+
+Then run:
+
+```bash
+chmod +x scripts/run-local.sh
+./scripts/run-local.sh
 ```
 
 This will automatically create a virtual environment, install dependencies, fetch proto schemas from GitHub, generate gRPC code, and start the server.
