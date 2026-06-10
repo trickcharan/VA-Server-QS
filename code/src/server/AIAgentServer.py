@@ -1,6 +1,7 @@
 import grpc
 import os
 import sys
+import traceback
 from concurrent import futures
 
 current_dir = os.path.dirname(os.path.abspath(__file__))  # This is 'main' directory
@@ -65,14 +66,36 @@ class AIAgent(voicevirtualagent_pb2_grpc.VoiceVirtualAgentServicer):
             print(ex)
 
 def serve():
-    thread_count = int(os.environ.get('worker_thread', 10))
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=thread_count), interceptors=[AuthInterceptor()])
-    voicevirtualagent_pb2_grpc.add_VoiceVirtualAgentServicer_to_server(AIAgent(), server)
-    server.add_insecure_port(f'[::]:{PORT}')
-    print('starting server')
-    server.start()
-    server.wait_for_termination()
+    try:
+        thread_count = int(os.environ.get('worker_thread', 10))
+
+        print('initializing AIAgent...')
+        try:
+            agent = AIAgent()
+        except Exception as ex:
+            print(f'ERROR: failed to initialize AIAgent: {ex}')
+            traceback.print_exc()
+            raise
+
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=thread_count), interceptors=[AuthInterceptor()])
+        voicevirtualagent_pb2_grpc.add_VoiceVirtualAgentServicer_to_server(agent, server)
+        server.add_insecure_port(f'[::]:{PORT}')
+
+        print('starting server')
+        try:
+            server.start()
+        except Exception as ex:
+            print(f'ERROR: failed to start gRPC server on port {PORT}: {ex}')
+            traceback.print_exc()
+            raise
+
+        print(f'server listening on port {PORT}')
+        server.wait_for_termination()
+    except Exception as ex:
+        print(f'FATAL: serve() crashed: {ex}')
+        traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == '__main__':
-    serve()    
-    
+    serve()
+
