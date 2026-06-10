@@ -60,10 +60,10 @@ def fetch_proto_file(api_url, filename, proto_folder):
 
 def fetch_and_decode_proto_schemas():
     """
-    Fetch both proto files from GitHub API and decode base64 content to proto folder
+    Fetch proto files from GitHub API. Falls back to bundled copies in src/proto/
+    if the network request fails.
     """
     
-    # Proto files to fetch
     proto_files = [
         {
             "url": "https://api.github.com/repos/webex/dataSourceSchemas/git/blobs/a22cf246a1e0a3302c48100aea8e2c5c09b66f0a",
@@ -83,22 +83,28 @@ def fetch_and_decode_proto_schemas():
         }
     ]
     
-    # Proto folder path
     proto_folder = "./src/proto"
-    
-    # Ensure proto folder exists
     os.makedirs(proto_folder, exist_ok=True)
     print(f"📁 Proto folder: {os.path.abspath(proto_folder)}")
     
     success_count = 0
-    
+    fallback_count = 0
+
     for proto_file in proto_files:
         print(f"\n{'='*50}")
         if fetch_proto_file(proto_file["url"], proto_file["filename"], proto_folder):
             success_count += 1
+        else:
+            fallback_path = os.path.join(proto_folder, proto_file["filename"])
+            if os.path.exists(fallback_path):
+                print(f"⚠️  Fetch failed — using bundled file: {fallback_path}")
+                fallback_count += 1
+            else:
+                print(f"❌ No bundled fallback found for {proto_file['filename']}")
         print(f"{'='*50}")
-    
-    return success_count == len(proto_files)
+
+    total_available = success_count + fallback_count
+    return total_available == len(proto_files)
 
 def main():
     """Main function"""
@@ -108,15 +114,10 @@ def main():
     success = fetch_and_decode_proto_schemas()
     
     if success:
-        print("\n🎉 All proto schemas fetched successfully!")
-        print("📄 Files created:")
-        print("   - byova_common.proto")
-        print("   - voicevirtualagent.proto")
-        print("   - conversationaudioforking.proto")
-        print("   - media_service_common.proto")
+        print("\n✅ All proto schemas ready.")
         sys.exit(0)
     else:
-        print("\n💥 Proto schema fetch failed!")
+        print("\n💥 Proto schema fetch failed and no bundled fallback available!")
         sys.exit(1)
 
 if __name__ == "__main__":
