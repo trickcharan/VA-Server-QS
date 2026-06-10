@@ -1,9 +1,15 @@
+import os
+import time
 from voicevirtualagent_pb2 import VoiceVAResponse
 from byova_common_pb2 import OutputEvent, EventInput
-import time
 from AudioUtils import AudioUtils
 from AudioProcessor import AudioProcessor
 from EventUtils import EventUtils
+
+WELCOME_TEXT = os.environ.get(
+    'WELCOME_TEXT',
+    "Welcome to the virtual agent simulator. Please speak after the tone."
+)
 
 class RequestProcessor:
 
@@ -49,12 +55,11 @@ class RequestProcessor:
 
     def _process_event_input(self, event_input):
         if event_input.event_type == EventInput.EventType.SESSION_START:
-            print("Received Session start input")
-            initial_audio = AudioUtils.get_default_audio()
-            yield EventUtils.get_audio_output_events_bytes(initial_audio, "Add transcript of the audio", self.is_barge_in_enabled, VoiceVAResponse.ResponseType.FINAL)
+            print(f"[Session] Start — generating TTS welcome: {WELCOME_TEXT}")
+            initial_audio = AudioUtils.convert_speech_to_wav_audio(WELCOME_TEXT)
+            yield EventUtils.get_audio_output_events_bytes(initial_audio, WELCOME_TEXT, self.is_barge_in_enabled, VoiceVAResponse.ResponseType.FINAL)
         elif event_input.event_type == EventInput.EventType.SESSION_END:
-            print("Received Session end input")
-            # Call ends here. Connection cleanup and memory release can be done here.
+            print("[Session] End")
             yield VoiceVAResponse()
 
     def _process_audio_event(self, audio_byte):

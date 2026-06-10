@@ -5,6 +5,16 @@
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 CODE_DIR="$SCRIPT_DIR/code"
 
+# Check system dependencies required for STT/TTS (pydub + SpeechRecognition)
+if ! command -v ffmpeg &>/dev/null; then
+    echo "⚠️  ffmpeg not found. Install it: brew install ffmpeg"
+    exit 1
+fi
+if ! command -v flac &>/dev/null; then
+    echo "⚠️  flac not found. Install it: brew install flac"
+    exit 1
+fi
+
 # Check if virtual environment exists
 if [ ! -d "$SCRIPT_DIR/.venv" ]; then
     echo "Virtual environment not found. Creating one..."
