@@ -4,7 +4,7 @@ RUN mkdir -p /app
 COPY . /app
 WORKDIR /app/code
 
-RUN apk add --no-cache ffmpeg flac build-base
+RUN apk add --no-cache ffmpeg flac build-base libsndfile
 
 RUN pip install --no-cache-dir -r requirements.txt
 
