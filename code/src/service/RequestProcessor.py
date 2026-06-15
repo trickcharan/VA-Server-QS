@@ -22,7 +22,8 @@ class RequestProcessor:
         self.can_be_deleted = False
         self.save_audio = False
         self.is_barge_in_enabled = False
-        self.audio_processor = AudioProcessor()       
+        self.audio_processor = AudioProcessor()
+        print(f"Received conversationId {self.conversation_id}")
 
     def process_request(self, request):
         event_type = request.WhichOneof("voice_va_input_type")
