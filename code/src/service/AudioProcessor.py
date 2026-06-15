@@ -69,10 +69,13 @@ class AudioProcessor:
         ai_audio = AudioUtils.convert_speech_to_raw_audio(SCRIPTED_RESPONSE)
         ai_audio_bytes = ai_audio.tobytes()
 
-        chunk_size = 6400  # 80ms at 8kHz mu-law
+        delayed = False
+        chunk_size = 640  # 80ms at 8kHz mu-law
         for i in range(0, len(ai_audio_bytes), chunk_size):
             chunk = ai_audio_bytes[i:i + chunk_size]
-            time.sleep(2)  # Pauses execution for exactly 5 seconds
+            if not delayed:
+                time.sleep(5)  # Pauses execution for exactly 5 seconds
+                delayed = True
             yield EventUtils.get_audio_output_events_bytes(
                 chunk, SCRIPTED_RESPONSE, self.is_barge_in_enabled, VoiceVAResponse.ResponseType.CHUNK)
 
