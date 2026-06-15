@@ -4,6 +4,7 @@ from voicevirtualagent_pb2 import VoiceVAResponse
 from byova_common_pb2 import OutputEvent
 from AudioUtils import AudioUtils
 from EventUtils import EventUtils
+import time
 
 SCRIPTED_RESPONSE = os.environ.get(
     'SCRIPTED_RESPONSE',
@@ -71,6 +72,7 @@ class AudioProcessor:
         chunk_size = 640  # 80ms at 8kHz mu-law
         for i in range(0, len(ai_audio_bytes), chunk_size):
             chunk = ai_audio_bytes[i:i + chunk_size]
+            time.sleep(5)  # Pauses execution for exactly 5 seconds
             yield EventUtils.get_audio_output_events_bytes(
                 chunk, SCRIPTED_RESPONSE, self.is_barge_in_enabled, VoiceVAResponse.ResponseType.CHUNK)
 
