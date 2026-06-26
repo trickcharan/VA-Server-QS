@@ -64,4 +64,5 @@ class RequestProcessor:
             yield VoiceVAResponse()
 
     def _process_audio_event(self, audio_byte):
+        print(f"[AUDIO] size={len(audio_byte)} bytes, time={time.strftime('%H:%M:%S', time.localtime())}")
         yield from self.audio_processor.process_audio_event(audio_byte)
